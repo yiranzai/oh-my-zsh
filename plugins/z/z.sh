@@ -1,4 +1,4 @@
-# Copyright (c) 2009 rupa deadwyler. Licensed under the WTFPL license, Version 2
+# Copyright (c) 2009 rupa deadwyler under the WTFPL license
 
 # maintains a jump-list of the directories you actually use
 #
@@ -21,7 +21,6 @@
 #     * z -r foo  # cd to highest ranked dir matching foo
 #     * z -t foo  # cd to most recently accessed dir matching foo
 #     * z -l foo  # list matches instead of cd
-#     * z -e foo  # echo the best match, don't cd
 #     * z -c foo  # restrict matches to subdirs of $PWD
 
 [ -d "${_Z_DATA:-$HOME/.z}" ] && {
@@ -32,19 +31,15 @@ _z() {
 
     local datafile="${_Z_DATA:-$HOME/.z}"
 
-    # if symlink, dereference
-    [ -h "$datafile" ] && datafile=$(readlink "$datafile")
-
     # bail if we don't own ~/.z and $_Z_OWNER not set
     [ -z "$_Z_OWNER" -a -f "$datafile" -a ! -O "$datafile" ] && return
 
     _z_dirs () {
-        local line
-        while read line; do
-            # only count directories
-            [ -d "${line%%\|*}" ] && echo "$line"
-        done < "$datafile"
-        return 0
+      while read line; do
+        # only count directories
+        [ -d "${line%%\|*}" ] && echo $line
+      done < "$datafile"
+      return 0
     }
 
     # add entries
@@ -62,7 +57,7 @@ _z() {
 
         # maintain the data file
         local tempfile="$datafile.$RANDOM"
-        _z_dirs | awk -v path="$*" -v now="$(date +%s)" -F"|" '
+        awk < <(_z_dirs 2>/dev/null) -v path="$*" -v now="$(date +%s)" -F"|" '
             BEGIN {
                 rank[path] = 1
                 time[path] = now
@@ -95,15 +90,17 @@ _z() {
 
     # tab completion
     elif [ "$1" = "--complete" -a -s "$datafile" ]; then
-        _z_dirs | awk -v q="$2" -F"|" '
+        while read line; do
+            [ -d "${line%%\|*}" ] && echo $line
+        done < "$datafile" | awk -v q="$2" -F"|" '
             BEGIN {
-                q = substr(q, 3)
                 if( q == tolower(q) ) imatch = 1
-                gsub(/ /, ".*", q)
+                q = substr(q, 3)
+                gsub(" ", ".*", q)
             }
             {
                 if( imatch ) {
-                    if( tolower($1) ~ q ) print $1
+                    if( tolower($1) ~ tolower(q) ) print $1
                 } else if( $1 ~ q ) print $1
             }
         ' 2>/dev/null
@@ -114,7 +111,7 @@ _z() {
             --) while [ "$1" ]; do shift; local fnd="$fnd${fnd:+ }$1";done;;
             -*) local opt=${1:1}; while [ "$opt" ]; do case ${opt:0:1} in
                     c) local fnd="^$PWD $fnd";;
-                    e) local echo=1;;
+                    e) local echo=echo;;
                     h) echo "${_Z_CMD:-z} [-cehlrtx] args" >&2; return;;
                     l) local list=1;;
                     r) local typ="rank";;
@@ -144,21 +141,19 @@ _z() {
                 if( dx < 604800 ) return rank / 2
                 return rank / 4
             }
-            function output(matches, best_match, common) {
+            function output(files, out, common) {
                 # list or return the desired directory
                 if( list ) {
                     cmd = "sort -n >&2"
-                    for( x in matches ) {
-                        if( matches[x] ) {
-                            printf "%-10s %s\n", matches[x], x | cmd
-                        }
+                    for( x in files ) {
+                        if( files[x] ) printf "%-10s %s\n", files[x], x | cmd
                     }
                     if( common ) {
                         printf "%-10s %s\n", "common:", common > "/dev/stderr"
                     }
                 } else {
-                    if( common ) best_match = common
-                    print best_match
+                    if( common ) out = common
+                    print out
                 }
             }
             function common(matches) {
@@ -169,9 +164,11 @@ _z() {
                     }
                 }
                 if( short == "/" ) return
-                for( x in matches ) if( matches[x] && index(x, short) != 1 ) {
-                    return
-                }
+                # use a copy to escape special characters, as we want to return
+                # the original. yeah, this escaping is awful.
+                clean_short = short
+                gsub(/\[\(\)\[\]\|\]/, "\\\\&", clean_short)
+                for( x in matches ) if( matches[x] && x !~ clean_short ) return
                 return short
             }
             BEGIN {
@@ -221,11 +218,11 @@ if type compctl >/dev/null 2>&1; then
         # populate directory list, avoid clobbering any other precmds.
         if [ "$_Z_NO_RESOLVE_SYMLINKS" ]; then
             _z_precmd() {
-                (_z --add "${PWD:a}" &)
+                (_z --add "${PWD:a}" &) >/dev/null 2>&1
             }
         else
             _z_precmd() {
-                (_z --add "${PWD:A}" &)
+                (_z --add "${PWD:A}" &) >/dev/null 2>&1
             }
         fi
         [[ -n "${precmd_functions[(r)_z_precmd]}" ]] || {
