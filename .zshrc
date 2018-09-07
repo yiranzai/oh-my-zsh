@@ -17,7 +17,6 @@ ZSH_THEME="random"
 ZSH_THEME_RANDOM_CANDIDATES=(
 "ys"
 "xxf"
-"jovial"
 "agnosterzak"
 "zeta"
 "nodeys"
@@ -112,8 +111,7 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-fpath=(~/.zsh.d/ $fpath
-)
+fpath=(~/.zsh.d/ $fpath)
 export JAVA_HOME=/usr/local/java/jdk1.8.0_181  
 export JRE_HOME=${JAVA_HOME}/jre  
 export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib  
