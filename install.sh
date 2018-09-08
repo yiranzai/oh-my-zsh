@@ -6,3 +6,4 @@ cp -R $DIR/vim $HOME/.vim
 cp $DIR/vim/.vimrc  $HOME/.vimrc
 cp $DIR/.zshrc  $HOME/.zshrc
 vim +PluginInstall +qall
+source  $HOME/.zshrc    
