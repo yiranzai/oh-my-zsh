@@ -117,4 +117,7 @@ export JRE_HOME=${JAVA_HOME}/jre
 export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib  
 export PATH=${JAVA_HOME}/bin:$PATH
 
+export LC_ALL=en_US.UTF-8  
+export LANG=en_US.UTF-8
+
 unsetopt BG_NICE
