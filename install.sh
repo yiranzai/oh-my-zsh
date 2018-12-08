@@ -1,11 +1,9 @@
 #!/bin/sh
-
-DIR="$( cd "$( dirname "$0" )" && pwd )"
-
-cp -R $DIR/vim $HOME/.vim
-cp $DIR/vim/.vimrc  $HOME/.vimrc
-cp $DIR/.zshrc  $HOME/.zshrc
-sh $HOME/.oh-my-zsh/fonts
+#DIR="$( cd "$( dirname "$0" )" && pwd )"
+cp -R $PWD/vim $HOME/.vim
+cp $PWD/vim/.vimrc  $HOME/.vimrc
+cp $PWD/.zshrc  $HOME/.zshrc
+sh $HOME/.oh-my-zsh/fonts/install.sh
 vim +PluginInstall +qall
 echo " -----------------------------warning-------------------------"
 echo "|   The installation is successful, please execute            |"
