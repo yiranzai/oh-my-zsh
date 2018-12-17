@@ -15,11 +15,12 @@ ZSH_THEME="random"
 # looking in ~/.oh-my-zsh/themes/
 # An empty array have no effect
 ZSH_THEME_RANDOM_CANDIDATES=(
-"ys"
-"xxf"
-"agnosterzak"
-"zeta"
-"nodeys"
+ "ys"                                                                                                                    
+ "xxf"                                                                                                                   
+ "agnosterzak"                                                                                                           
+ "bullet-train"                                                                                                          
+ "zeta"                                                                                                                  
+ "nodeys" 
 )
 
 # Uncomment the following line to use case-sensitive completion.
@@ -80,6 +81,10 @@ plugins=(
   php
   zsh-autosuggestions
   zsh-syntax-highlighting
+  codeception
+  robo
+  laravel
+  envoy
 )
 source $ZSH/oh-my-zsh.sh
 
@@ -120,4 +125,23 @@ export PATH=${JAVA_HOME}/bin:$PATH
 export LC_ALL=en_US.UTF-8  
 export LANG=en_US.UTF-8
 
+export http_proxy="127.0.0.1:8118"
+export https_proxy="127.0.0.1:8118"
+export ftp_proxy="127.0.0.1:8118"
+
+
+alias cdblog="cd /work/www/blog_yiranzai_cn"
+alias cdwork="cd /work/www/webroot"
+alias cdwebdean="cd /work/www/crm-frontend-dean"
+alias cdweb="cd /work/www/crm-frontend"
+alias cdcodedean="cd /work/www/dn_platform"
+alias cdcode="cd /work/www/platform"
+alias cdcrmdean="cd /work/www/crm-php-dean"
+alias cdcrm="cd /work/www/crm-php"
+alias gpo="git push origin"
+
+
+alias sw="sudo -u www"
+
 unsetopt BG_NICE
+setopt no_nomatch
