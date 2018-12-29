@@ -117,25 +117,46 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 fpath=(~/.zsh.d/ $fpath)
-export JAVA_HOME=/usr/local/java/jdk1.8.0_181  
+export JAVA_HOME=/usr/local/java/jre1.8.0_191 
 export JRE_HOME=${JAVA_HOME}/jre  
 export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib  
 export PATH=${JAVA_HOME}/bin:$PATH
 
+export GOROOT=/usr/local/go/
+export GOBIN=${GOROOT}/bin
+export GOPATH=/usr/local/gopath/
+export PATH=${GOROOT}/bin:$PATH 
+
 export LC_ALL=en_US.UTF-8  
 export LANG=en_US.UTF-8
 
-export http_proxy="127.0.0.1:8118"
-export https_proxy="127.0.0.1:8118"
-export ftp_proxy="127.0.0.1:8118"
-
+export proxy_host=127.0.0.1
+export proxy_port=8118
+export switch_proxy=0
+function pp(){
+    if [ $switch_proxy = 0 ]; then
+        export http_proxy="$proxy_host:$proxy_port"
+        export https_proxy="$proxy_host:$proxy_port"                                                                                     
+        export ftp_proxy="$proxy_host:$proxy_port"
+        switch_proxy=1
+        echo -e "梯子模式"
+    else
+        unset http_proxy
+        unset https_proxy
+        unset ftp_proxy
+        switch_proxy=0
+        echo -e "和谐模式"
+    fi
+}
 
 alias cdblog="cd /work/www/blog_yiranzai_cn"
 alias cdwork="cd /work/www/webroot"
+alias cdweb3rd="cd /work/www/crm-frontend-3rd"
 alias cdwebdean="cd /work/www/crm-frontend-dean"
 alias cdweb="cd /work/www/crm-frontend"
 alias cdcodedean="cd /work/www/dn_platform"
 alias cdcode="cd /work/www/platform"
+alias cdcrm3rd="cd /work/www/crm-php-3rd"
 alias cdcrmdean="cd /work/www/crm-php-dean"
 alias cdcrm="cd /work/www/crm-php"
 alias gpo="git push origin"
@@ -143,5 +164,4 @@ alias gpo="git push origin"
 
 alias sw="sudo -u www"
 
-unsetopt BG_NICE
 setopt no_nomatch
