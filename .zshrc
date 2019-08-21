@@ -19,7 +19,6 @@ ZSH_THEME_RANDOM_CANDIDATES=(
  "xxf"                                                                                                                   
  "agnosterzak"                                                                                                           
  "bullet-train"                                                                                                          
- "zeta"                                                                                                                  
  "nodeys" 
 )
 
@@ -81,10 +80,7 @@ plugins=(
   php
   zsh-autosuggestions
   zsh-syntax-highlighting
-  codeception
-  robo
-  laravel
-  envoy
+  docker-compose
 )
 source $ZSH/oh-my-zsh.sh
 
@@ -127,12 +123,17 @@ export GOBIN=${GOROOT}/bin
 export GOPATH=/usr/local/gopath/
 export PATH=${GOROOT}/bin:$PATH 
 
+export FLUTTER_HOME=/usr/local/flutter
+export PATH=${FLUTTER_HOME}/bin:$PATH 
+
 export LC_ALL=en_US.UTF-8  
 export LANG=en_US.UTF-8
 
 export proxy_host=127.0.0.1
-export proxy_port=8118
+export proxy_port=9119
 export switch_proxy=0
+export cdc_in=0
+
 function pp(){
     if [ $switch_proxy = 0 ]; then
         export http_proxy="$proxy_host:$proxy_port"
@@ -149,19 +150,39 @@ function pp(){
     fi
 }
 
+# function cdc(){
+#     if [ $cdc_in = 0 ]; then
+#         export proxy_host=127.0.0.1
+#         export proxy_port=12639
+#         cdc_in=1
+#         echo -e "进入CDC"
+#         pp
+#         pp
+#     else
+#         export proxy_host=127.0.0.1
+#         export proxy_port=8118
+#         cdc_in=0
+#         echo -e "离开CDC"
+#         pp
+#         pp
+#     fi
+# }
+
+export no_proxy="*.oa.com,localhost,*.ma.com,*.test.com"
+
 alias cdblog="cd /work/www/blog_yiranzai_cn"
-alias cdwork="cd /work/www/webroot"
-alias cdweb3rd="cd /work/www/crm-frontend-3rd"
-alias cdwebdean="cd /work/www/crm-frontend-dean"
-alias cdweb="cd /work/www/crm-frontend"
-alias cdcodedean="cd /work/www/dn_platform"
-alias cdcode="cd /work/www/platform"
-alias cdcrm3rd="cd /work/www/crm-php-3rd"
-alias cdcrmdean="cd /work/www/crm-php-dean"
-alias cdcrm="cd /work/www/crm-php"
+alias cdwork="cd /work/www/"
+alias cdd="cd /work/docker/dnamp/"
 alias gpo="git push origin"
 
 
 alias sw="sudo -u www"
 
 setopt no_nomatch
+export PATH="/usr/local/opt/qt/bin:$PATH"
+
+pp
+
+alias transtoen='trans -l zh -t en '
+alias transtocn='trans -l zh -t zh '
+alias trans='trans -l zh '
