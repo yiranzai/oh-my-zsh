@@ -218,11 +218,17 @@ if type compctl >/dev/null 2>&1; then
         # populate directory list, avoid clobbering any other precmds.
         if [ "$_Z_NO_RESOLVE_SYMLINKS" ]; then
             _z_precmd() {
-                (_z --add "${PWD:a}" &) >/dev/null 2>&1
+                (_z --add "${PWD:a}" &)
+                # Reference $RANDOM to refresh its value inside the subshell
+                # Otherwise, multiple runs get the same value
+                : $RANDOM
             }
         else
             _z_precmd() {
-                (_z --add "${PWD:A}" &) >/dev/null 2>&1
+                (_z --add "${PWD:A}" &)
+                # Reference $RANDOM to refresh its value inside the subshell
+                # Otherwise, multiple runs get the same value
+                : $RANDOM
             }
         fi
         [[ -n "${precmd_functions[(r)_z_precmd]}" ]] || {
